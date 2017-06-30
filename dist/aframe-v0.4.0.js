@@ -64253,6 +64253,10 @@ module.exports = registerElement('a-scene', {
         window.addEventListener('load', resize);
         window.addEventListener('resize', resize);
         this.play();
+
+        // Handler to exit VR (e.g., Oculus Browser back button).
+        this.onVRPresentChangeBound = bind(this.onVRPresentChange, this);
+        window.addEventListener('vrdisplaypresentchange', this.onVRPresentChangeBound);
       },
       writable: window.debug
     },
@@ -64279,6 +64283,7 @@ module.exports = registerElement('a-scene', {
       value: function () {
         window.cancelAnimationFrame(this.animationFrameID);
         this.animationFrameID = null;
+        window.removeEventListener('vrdisplaypresentchange', this.onVRPresentChangeBound);
       }
     },
 
@@ -64359,6 +64364,22 @@ module.exports = registerElement('a-scene', {
             throw new Error('Failed to exit VR mode (`exitPresent`).');
           }
         }
+      }
+    },
+
+    /**
+     * Handle `vrdisplaypresentchange` event for exiting VR through other means than
+     * `<ESC>` key. For example, GearVR back button on Oculus Browser.
+     */
+    onVRPresentChange: {
+      value: function (evt) {
+        // Entering VR.
+        if (evt.display.isPresenting) {
+          this.enterVR(true);
+          return;
+        }
+        // Exiting VR.
+        this.exitVR(true);
       }
     },
 
