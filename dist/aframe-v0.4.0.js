@@ -64337,10 +64337,10 @@ module.exports = registerElement('a-scene', {
     },
 
     exitVR: {
-      value: function () {
+      value: function (fromExternal) {
         var self = this;
         if (!this.is('vr-mode')) { return Promise.resolve(); }
-        if (checkHeadsetConnected() || this.isMobile) {
+        if (!fromExternal && (checkHeadsetConnected() || this.isMobile)) {
           return this.effect.exitPresent().then(exitVRSuccess, exitVRFailure);
         }
         exitVRSuccess();
@@ -64375,7 +64375,8 @@ module.exports = registerElement('a-scene', {
       value: function (evt) {
         // Entering VR.
         if (evt.display.isPresenting) {
-          this.enterVR(true);
+          // Do not support entering VR from external just yet (see 0.6.0)
+          //this.enterVR(true);
           return;
         }
         // Exiting VR.
