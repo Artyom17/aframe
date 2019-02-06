@@ -28,10 +28,10 @@ function parse (value, defaultVec) {
     var y = value.y === undefined ? defaultVec && defaultVec.y : value.y;
     var z = value.z === undefined ? defaultVec && defaultVec.z : value.z;
     var w = value.w === undefined ? defaultVec && defaultVec.w : value.w;
-    if (x !== undefined) value.x = parseIfString(x);
-    if (y !== undefined) value.y = parseIfString(y);
-    if (z !== undefined) value.z = parseIfString(z);
-    if (w !== undefined) value.w = parseIfString(w);
+    if (x != null) value.x = parseIfString(x);
+    if (y != null) value.y = parseIfString(y);
+    if (z != null) value.z = parseIfString(z);
+    if (w != null) value.w = parseIfString(w);
     return value;
   }
 
@@ -82,7 +82,10 @@ module.exports.isCoordinate = function (value) {
 };
 
 function parseIfString (val) {
-  if (val.constructor === String) {
+  if (val === null) {
+    warn('ssssssss');
+  }
+  if (val != null && val.constructor === String) {
     return parseFloat(val, 10);
   }
   return val;
